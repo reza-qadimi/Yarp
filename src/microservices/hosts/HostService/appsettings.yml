@@ -1,0 +1,102 @@
+﻿---
+Logging:
+  LogLevel:
+    Default: Information
+    Microsoft.AspNetCore: Warning
+AllowedHosts: "*"
+ReverseProxy:
+  Routes:
+
+    userManagementLoginService:
+      ClusterId: userManagementApiCluster
+      Match:
+        Hosts:
+        - localhost
+        Path: "/api/usermanagement/login"
+        Methods:
+        - POST
+      Transforms:
+      - PathPattern: "/users/login"
+
+    userManagementGetByIdService:
+      ClusterId: userManagementApiCluster
+      Match:
+        Hosts:
+        - localhost
+        Path: "/api/usermanagement/{id}"
+        Methods:
+        - GET
+      Transforms:
+      - PathPattern: "/users/{id}"
+      #AuthorizationPolicy: "RegisteredPolicy"
+
+    orderApiRoute:
+      ClusterId: orderApiCluster
+      Match:
+        Hosts:
+        - localhost
+        Path: "/api/orders/{**catch-all}"
+        Methods:
+        - GET
+      Transforms:
+      - PathRemovePrefix: "/api"
+      AllowAnonymous: false
+
+      #Authorize:
+      #- Policy: RequireAuthenticatedUserPolicy
+      #  Roles: Role1,Role2
+      #  AuthenticationSchemes: jwt
+      #- Policy: RequireAuthenticatedUserPolicy
+      #  Roles: Role3
+      #  AuthenticationSchemes: jwt
+      #AuthorizationPolicy: "AdminsPolicy"
+
+  Clusters:
+
+    userManagementApiCluster:
+      Destinations:
+        userManagementApiCluster/destination1:
+          Address: https://localhost:7145/
+
+    orderApiCluster:
+      LoadBalancingPolicy: RoundRobin
+      Destinations:
+        orderApiCluster/destination1:
+          Address: https://localhost:7256/
+        orderApiCluster/destination2:
+          Address: https://localhost:7149/
+        orderApiCluster/destination3:
+          Address: https://localhost:7107
+
+#Authentication:
+#  CookieName: __BFF
+#  SaveTokens: true
+#  ResponseType: code
+#  ResponseMode: query
+#  ClientSecret: secret
+#  MapInboundClaims: false
+#  Authority: https://localhost:7145/
+#  ClientId: interactive.confidential
+#  GetClaimsFromUserInfoEndpoint: true
+#  Scope: openid profile api offline_access
+
+ApplicationSetting:
+  Jwt:
+    TokenExpiresInMinutes: 60
+    SecretKey: "^cqkkV1Y2o5ekQCtf@uSM3$6q9QAhuCdC&9oZ~vp%5iBu&uUwFIk32W8Mhr1IgngqC&X4HeeR%9M~ZMm5rs78B*jtRPqqLhAjLLw"
+
+  Policies:
+    Public:
+      Name: 
+      ValidRoles: null
+      IsAuthenticated: false
+
+    Registered:
+      Name: RegisteredPolicy
+      ValidRoles: null
+      IsAuthenticated: true
+
+    Admin:
+      Name: AdminsPolicy
+      ValidRoles: [Admin]
+      IsAuthenticated: true

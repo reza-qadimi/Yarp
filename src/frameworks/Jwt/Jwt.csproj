@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.13.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\microservices\usermanagements\UserManagement.Domain\UserManagement.Domain.csproj" />
+	  <ProjectReference Include="..\..\microservices\usermanagements\UserManagement.Persistence\UserManagement.Persistence.csproj" />
+	  <ProjectReference Include="..\..\microservices\usermanagements\UserManagement.ViewModels\UserManagement.ViewModels.csproj" />
+	</ItemGroup>
+	
+</Project>
